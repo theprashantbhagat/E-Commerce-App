@@ -154,8 +154,8 @@ public class UserController {
         return new ResponseEntity<>(userDtos,HttpStatus.OK);
     }
 
-    @PostMapping("/image/upload/{userId}")
-    public ResponseEntity<ImageResponse> uploadUserImage(@RequestParam("userImage")MultipartFile image,@PathVariable String userId) throws IOException {
+    @PostMapping("/users/image/{userId}")
+    public ResponseEntity<ImageResponse> uploadUserImage(@RequestParam MultipartFile image,@PathVariable String userId) throws IOException {
 
         String imageName = fileService.uploadFile(image, imageUploadPath);
         UserDto user = userService.getUserById(userId);
@@ -166,9 +166,10 @@ public class UserController {
         return new ResponseEntity<>(imageResponse,HttpStatus.CREATED);
     }
 
-    @GetMapping("/image/{imageName}")
-    public void downloadImage(@PathVariable String imageName , HttpServletResponse response) throws IOException {
-        InputStream resource = fileService.getResource(imageUploadPath, imageName);
+    @GetMapping("/users/image/{userId}")
+    public void downloadImage(@PathVariable String userId , HttpServletResponse response) throws IOException {
+        UserDto user = userService.getUserById(userId);
+        InputStream resource = fileService.getResource(imageUploadPath, user.getUserImageName());
         response.setContentType(MediaType.IMAGE_JPEG_VALUE);
         StreamUtils.copy(resource,response.getOutputStream());
 
