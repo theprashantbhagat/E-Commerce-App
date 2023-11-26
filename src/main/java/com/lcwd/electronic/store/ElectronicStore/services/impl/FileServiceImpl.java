@@ -17,6 +17,7 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public String uploadFile(MultipartFile file, String path) throws IOException {
+        log.info("Entering request for upload image ");
         String originalFilename = file.getOriginalFilename();
         log.info("fileName :{}" ,originalFilename);
         String filename = UUID.randomUUID().toString();
@@ -34,6 +35,7 @@ public class FileServiceImpl implements FileService {
                 folder.mkdirs();
             }
             Files.copy(file.getInputStream(), Paths.get(fullPathWithFileName));
+            log.info("Completed request for upload image");
             return fileNameWithExtension;
         }
         else{
