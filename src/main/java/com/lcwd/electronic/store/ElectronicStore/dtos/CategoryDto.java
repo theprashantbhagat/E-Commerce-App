@@ -20,7 +20,7 @@ public class CategoryDto {
     private String title;
 
     @NotBlank
-    @Size(min = 10,message = "Description should contain minimum of 10 characters")
+    @Size(min = 10,message = "Description required!!")
     private String description;
 
     @ImageNameValid

@@ -5,15 +5,24 @@ import com.lcwd.electronic.store.ElectronicStore.constants.PaginationConstants;
 import com.lcwd.electronic.store.ElectronicStore.constants.UrlConstants;
 import com.lcwd.electronic.store.ElectronicStore.dtos.CategoryDto;
 import com.lcwd.electronic.store.ElectronicStore.payloads.ApiResponse;
+import com.lcwd.electronic.store.ElectronicStore.payloads.ImageResponse;
 import com.lcwd.electronic.store.ElectronicStore.payloads.PageableResponse;
 import com.lcwd.electronic.store.ElectronicStore.services.CategoryService;
+import com.lcwd.electronic.store.ElectronicStore.services.FileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
+import java.io.InputStream;
 
 @RestController
 @RequestMapping(UrlConstants.BASE_URL)
@@ -21,18 +30,23 @@ import javax.validation.Valid;
 public class CategoryController {
 
     @Autowired
+    private FileService fileService;
+
+    @Value("${category.profile.image.path}")
+    private String path;
+
+    @Autowired
     private CategoryService categoryService;
 
     /**
+     * @param categoryDto
+     * @return
      * @apiNote this is related to create category
      * @author Prashant Bhagat
      * @since V 1.0
-     * @param categoryDto
-     * @return
      */
     @PostMapping("/category")
-    public ResponseEntity<CategoryDto> createCategory(@Valid @RequestBody CategoryDto categoryDto)
-    {
+    public ResponseEntity<CategoryDto> createCategory(@Valid @RequestBody CategoryDto categoryDto) {
         log.info("Entering request for create category data");
         CategoryDto category = this.categoryService.createCategory(categoryDto);
         log.info("Completed request for create category data");
@@ -40,73 +54,113 @@ public class CategoryController {
     }
 
     /**
-     * @apiNote this is related to update category
-     * @since V 1.0
-     * @author Prashant Bhagat
      * @param categoryDto
      * @param categoryId
      * @return
+     * @apiNote this is related to update category
+     * @author Prashant Bhagat
+     * @since V 1.0
      */
     @PutMapping("/category/{categoryId}")
-    public ResponseEntity<CategoryDto> updateCategory(@Valid @RequestBody CategoryDto categoryDto, @PathVariable String categoryId)
-    {
-        log.info("Entering request for update the category data with category id :{}",categoryId);
+    public ResponseEntity<CategoryDto> updateCategory(@Valid @RequestBody CategoryDto categoryDto, @PathVariable String categoryId) {
+        log.info("Entering request for update the category data with category id :{}", categoryId);
         CategoryDto updateCategory = this.categoryService.updateCategory(categoryDto, categoryId);
-        log.info("Completed request for update category with category id :{}",categoryId);
-        return new ResponseEntity<>(updateCategory,HttpStatus.OK);
+        log.info("Completed request for update category with category id :{}", categoryId);
+        return new ResponseEntity<>(updateCategory, HttpStatus.OK);
     }
 
     /**
-     * @apiNote this is related to get category by id
-     * @since V 1.0
-     * @author Prashant Bhagat
      * @param categoryId
      * @return
+     * @apiNote this is related to get category by id
+     * @author Prashant Bhagat
+     * @since V 1.0
      */
     @GetMapping("/category/{categoryId}")
-    public ResponseEntity<CategoryDto> getCategoryById(@PathVariable String categoryId){
-        log.info("Entering request for get category by id :{}",categoryId);
+    public ResponseEntity<CategoryDto> getCategoryById(@PathVariable String categoryId) {
+        log.info("Entering request for get category by id :{}", categoryId);
         CategoryDto categoryById = this.categoryService.getCategoryById(categoryId);
-        log.info("Completed request for get category by id :{}",categoryId);
-        return new ResponseEntity<>(categoryById,HttpStatus.OK);
+        log.info("Completed request for get category by id :{}", categoryId);
+        return new ResponseEntity<>(categoryById, HttpStatus.OK);
 
     }
 
     /**
-     * @apiNote this is related to get all categories
-     * @author Prashant Bhagat
-     * @since V 1.0
      * @param pageNumber
      * @param pageSize
      * @param sortBy
      * @param sortDir
      * @return
+     * @apiNote this is related to get all categories
+     * @author Prashant Bhagat
+     * @since V 1.0
      */
     @GetMapping("/categories")
     public ResponseEntity<PageableResponse<CategoryDto>> getAllCategories(
-            @RequestParam(value = "pageNumber",defaultValue = PaginationConstants.PAGE_NUMBER,required = false) Integer pageNumber,
-            @RequestParam(value = "pageSize",defaultValue = PaginationConstants.PAGE_SIZE,required = false) Integer pageSize,
-            @RequestParam(value = "sortBy",defaultValue = PaginationConstants.SORT_BY,required = false) String sortBy,
-            @RequestParam(value = "sortDir",defaultValue = PaginationConstants.SORT_DIR,required = false) String sortDir
-    ){
+            @RequestParam(value = "pageNumber", defaultValue = PaginationConstants.PAGE_NUMBER, required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = PaginationConstants.PAGE_SIZE, required = false) Integer pageSize,
+            @RequestParam(value = "sortBy", defaultValue = PaginationConstants.SORT_BY, required = false) String sortBy,
+            @RequestParam(value = "sortDir", defaultValue = PaginationConstants.SORT_DIR, required = false) String sortDir
+    ) {
         log.info("Entering request for get all categories by pagination and sorting");
         PageableResponse<CategoryDto> allCategories = this.categoryService.getAllCategories(pageNumber, pageSize, sortBy, sortDir);
         log.info("Completed Request for get All categories By pagination And Sorting");
-        return new ResponseEntity<>(allCategories,HttpStatus.OK);
+        return new ResponseEntity<>(allCategories, HttpStatus.OK);
     }
 
     /**
+     * @param categoryId
+     * @return
      * @apiNote this is related to delete category
      * @author Prashant Bhagat
      * @since V 1.0
-     * @param categoryId
-     * @return
      */
     @DeleteMapping("/category/{categoryId}")
-    public ResponseEntity<ApiResponse> deleteCategory(@PathVariable String categoryId){
-        log.info("Entering Request for delete the category with category id:{}",categoryId);
+    public ResponseEntity<ApiResponse> deleteCategory(@PathVariable String categoryId) {
+        log.info("Entering Request for delete the category with category id:{}", categoryId);
         this.categoryService.deleteCategory(categoryId);
-        log.info("Completed request for delete the category with category id :{}",categoryId);
-        return new ResponseEntity<>(new ApiResponse(AppConstants.DELETE_RESPONSE,true),HttpStatus.OK);
+        ApiResponse response = ApiResponse.builder().message(AppConstants.DELETE_RESPONSE).success(true).status(HttpStatus.OK).build();
+        log.info("Completed request for delete the category with category id :{}", categoryId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    /**
+     * @param image
+     * @param categoryId
+     * @return
+     * @throws IOException
+     * @apiNote This method is related to upload cover image
+     * @author Prashant Bhagat
+     * @since V 1.0
+     */
+    @PostMapping("/category/image/{categoryId}")
+    public ResponseEntity<ImageResponse> uploadCoverImage(@RequestParam MultipartFile image, @PathVariable String categoryId) throws IOException {
+
+        log.info("Entering request for upload cover image with category id :{}", categoryId);
+        String uploadFile = fileService.uploadFile(image, path);
+        CategoryDto cat = categoryService.getCategoryById(categoryId);
+        cat.setCoverImage(uploadFile);
+        categoryService.updateCategory(cat, categoryId);
+        ImageResponse imageUploaded = ImageResponse.builder().imageName(uploadFile).message("Image Uploaded").success(true).status(HttpStatus.CREATED).build();
+        log.info("Completed request for upload cover image with category id :{}", categoryId);
+        return new ResponseEntity<>(imageUploaded, HttpStatus.CREATED);
+    }
+
+    /**
+     * @param categoryId
+     * @param response
+     * @throws IOException
+     * @apiNote This method is related to serve cover Image
+     * @author Prashant Bhagat
+     * @since V 1.0
+     */
+    @GetMapping("/category/image/{categoryId}")
+    public void serveCoverImage(@PathVariable String categoryId, HttpServletResponse response) throws IOException {
+        log.info("Entering Request for get cover image with category id :{}", categoryId);
+        CategoryDto category = categoryService.getCategoryById(categoryId);
+        InputStream resource = fileService.getResource(path, category.getCoverImage());
+        response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+        StreamUtils.copy(resource, response.getOutputStream());
+        log.info("Completed Request for get cover image with category id :{}", categoryId);
     }
 }

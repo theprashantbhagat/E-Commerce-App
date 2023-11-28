@@ -14,6 +14,6 @@ public class ApiResponse {
    // private String status;
     private boolean success;
 
-   // private HttpStatus status;
+    private HttpStatus status;
 
 }

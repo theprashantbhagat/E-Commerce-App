@@ -17,29 +17,27 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public String uploadFile(MultipartFile file, String path) throws IOException {
-        log.info("Entering request for upload image ");
+        log.info("Initiating Dao call for upload image ");
         String originalFilename = file.getOriginalFilename();
-        log.info("fileName :{}" ,originalFilename);
+        log.info("fileName :{}", originalFilename);
         String filename = UUID.randomUUID().toString();
         String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
         String fileNameWithExtension = filename + extension;
-        String fullPathWithFileName=path+fileNameWithExtension;
-        log.info("Full image path :{}",fullPathWithFileName);
+        String fullPathWithFileName = path + fileNameWithExtension;
+        log.info("Full image path :{}", fullPathWithFileName);
 
-        if(extension.equalsIgnoreCase(".png")||extension.equalsIgnoreCase(".jpg")||extension.equalsIgnoreCase(".jpeg")){
+        if (extension.equalsIgnoreCase(".png") || extension.equalsIgnoreCase(".jpg") || extension.equalsIgnoreCase(".jpeg")) {
 
-            log.info("file extension is :{}",extension);
+            log.info("file extension is :{}", extension);
             File folder = new File(path);
-            if(!folder.exists())
-            {
+            if (!folder.exists()) {
                 folder.mkdirs();
             }
             Files.copy(file.getInputStream(), Paths.get(fullPathWithFileName));
-            log.info("Completed request for upload image");
+            log.info("Completed dao call for upload image");
             return fileNameWithExtension;
-        }
-        else{
-            throw new BadApiRequestException("File with this "+extension+" Not allowed");
+        } else {
+            throw new BadApiRequestException("File with this " + extension + " Not allowed");
         }
 
     }
@@ -47,8 +45,10 @@ public class FileServiceImpl implements FileService {
     @Override
     public InputStream getResource(String path, String name) throws FileNotFoundException {
 
-        String fullPath=path + File.separator + name;
+        log.info("Initiating dao call for serve the image");
+        String fullPath = path + name;
         InputStream inputStream = new FileInputStream(fullPath);
+        log.info("Completed dao call for serve the image");
         return inputStream;
     }
 }
