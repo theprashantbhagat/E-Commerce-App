@@ -1,6 +1,7 @@
 package com.lcwd.electronic.store.ElectronicStore.controllers;
 
 import com.lcwd.electronic.store.ElectronicStore.constants.AppConstants;
+import com.lcwd.electronic.store.ElectronicStore.constants.PaginationConstants;
 import com.lcwd.electronic.store.ElectronicStore.constants.UrlConstants;
 
 import com.lcwd.electronic.store.ElectronicStore.dtos.ProductDto;
@@ -48,4 +49,16 @@ public class ProductController {
         ApiResponse response = ApiResponse.builder().message(AppConstants.DELETE_RESPONSE).success(true).status(HttpStatus.OK).build();
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
+
+    @GetMapping("/product")
+    public ResponseEntity<PageableResponse<ProductDto>> getAllProducts(
+            @RequestParam(value = "pageNum",defaultValue = PaginationConstants.PAGE_NUMBER,required = false) Integer pageNum,
+            @RequestParam(value = "pageSize",defaultValue = PaginationConstants.PAGE_SIZE,required = false) Integer pageSize,
+            @RequestParam(value = "sortBy",defaultValue = PaginationConstants.SORT_BY,required = false) String sortBy,
+            @RequestParam(value = "sortDir",defaultValue = PaginationConstants.SORT_DIR,required = false) String sortDir
+    ){
+        PageableResponse<ProductDto> allProducts = this.productService.getAllProducts(pageNum, pageSize, sortBy, sortDir);
+        return new ResponseEntity<PageableResponse<ProductDto>>(allProducts,HttpStatus.OK);
+    }
+
 }
