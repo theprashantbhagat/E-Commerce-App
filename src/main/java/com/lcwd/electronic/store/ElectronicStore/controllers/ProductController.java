@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping(UrlConstants.BASE_URL)
@@ -61,4 +62,10 @@ public class ProductController {
         return new ResponseEntity<PageableResponse<ProductDto>>(allProducts,HttpStatus.OK);
     }
 
+    @GetMapping("product/search/{subTitle}")
+    public ResponseEntity<List<ProductDto>> searchByTitle(String subTitle){
+
+        List<ProductDto> productDtos = this.productService.searchByTitle(subTitle);
+        return new ResponseEntity<>(productDtos,HttpStatus.OK);
+    }
 }
