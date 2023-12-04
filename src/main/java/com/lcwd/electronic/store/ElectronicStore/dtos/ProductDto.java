@@ -28,6 +28,9 @@ public class ProductDto {
     private Double price;
 
     @NotEmpty
+    private Double discountedPrice;
+
+    @NotEmpty
     private Integer quantity;
 
     @NotEmpty

@@ -29,6 +29,9 @@ public class Product {
     @Column(name = "product_price")
     private Double price;
 
+    @Column(name = "product_discounted_price")
+    private Double discountedPrice;
+
     @Column(name = "product_quantity")
     private Integer quantity;
 
