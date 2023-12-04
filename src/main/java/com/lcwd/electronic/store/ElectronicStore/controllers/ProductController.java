@@ -1,8 +1,10 @@
 package com.lcwd.electronic.store.ElectronicStore.controllers;
 
+import com.lcwd.electronic.store.ElectronicStore.constants.AppConstants;
 import com.lcwd.electronic.store.ElectronicStore.constants.UrlConstants;
 
 import com.lcwd.electronic.store.ElectronicStore.dtos.ProductDto;
+import com.lcwd.electronic.store.ElectronicStore.payloads.ApiResponse;
 import com.lcwd.electronic.store.ElectronicStore.payloads.PageableResponse;
 import com.lcwd.electronic.store.ElectronicStore.repositories.ProductRepository;
 import com.lcwd.electronic.store.ElectronicStore.services.ProductService;
@@ -28,9 +30,22 @@ public class ProductController {
         return new ResponseEntity<>(product, HttpStatus.CREATED);
     }
 
-    @PutMapping("/product")
+    @PutMapping("/product/{productId}")
     public ResponseEntity<ProductDto> updateProduct(@Valid @RequestBody ProductDto productDto, @PathVariable String productId){
         ProductDto updatedProduct = this.productService.updateProduct(productDto, productId);
         return new ResponseEntity<>(updatedProduct,HttpStatus.OK);
+    }
+
+    @GetMapping("/product/{productId}")
+    public ResponseEntity<ProductDto> getProductById(@PathVariable String productId){
+        ProductDto productById = this.productService.getProductById(productId);
+        return new ResponseEntity<>(productById,HttpStatus.OK);
+    }
+
+    @DeleteMapping("/product/{productId}")
+    public ResponseEntity<ApiResponse> deleteProduct(@PathVariable String productId){
+        this.productService.deleteProduct(productId);
+        ApiResponse response = ApiResponse.builder().message(AppConstants.DELETE_RESPONSE).success(true).status(HttpStatus.OK).build();
+        return new ResponseEntity<>(response,HttpStatus.OK);
     }
 }
