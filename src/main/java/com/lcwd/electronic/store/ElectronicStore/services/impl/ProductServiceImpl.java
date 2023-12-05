@@ -10,11 +10,13 @@ import com.lcwd.electronic.store.ElectronicStore.repositories.ProductRepository;
 import com.lcwd.electronic.store.ElectronicStore.services.ProductService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -26,6 +28,9 @@ public class ProductServiceImpl implements ProductService {
     private ProductRepository productRepository;
     @Autowired
     private ModelMapper modelMapper;
+
+    @Value("${product.profile.image.path}")
+    private String path;
     @Override
     public ProductDto createProduct(ProductDto productDto) {
         String productId = UUID.randomUUID().toString();
@@ -55,7 +60,14 @@ public class ProductServiceImpl implements ProductService {
     public void deleteProduct(String productId) {
 
         Product product = this.productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException(AppConstants.NOT_FOUND + "id" + productId));
+        String imageName = product.getImageName();
+        String fullPath=path+imageName;
+        File file=new File(fullPath);
+        if(file.exists()){
+            file.delete();
+        }
         this.productRepository.delete(product);
+
 
     }
 
