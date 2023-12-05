@@ -14,12 +14,16 @@ import com.lcwd.electronic.store.ElectronicStore.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.io.InputStream;
 
 @RestController
 @RequestMapping(UrlConstants.BASE_URL)
@@ -109,5 +113,12 @@ public class ProductController {
 
     }
 
+    @GetMapping("/product/image/{productId}")
+    public void getImage(@PathVariable String productId, HttpServletResponse response) throws IOException {
+        ProductDto product = productService.getProductById(productId);
+        InputStream resource = fileService.getResource(path, product.getImageName());
+        response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+        StreamUtils.copy(resource,response.getOutputStream());
+    }
 
 }
