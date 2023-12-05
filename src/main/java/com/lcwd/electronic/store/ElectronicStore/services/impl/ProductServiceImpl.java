@@ -73,14 +73,20 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDto> getAllLive() {
-        List<Product> isLive = this.productRepository.findByLiveTrue();
-        return isLive.stream().map(product->this.modelMapper.map(product,ProductDto.class)).collect(Collectors.toList());
+    public PageableResponse<ProductDto> getAllLive(Integer pageNum, Integer pageSize, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase("dsc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        PageRequest pageable = PageRequest.of(pageNum, pageSize, sort);
+        Page<Product> page = this.productRepository.findByLiveTrue(pageable);
+        PageableResponse<ProductDto> response = PageableHelper.getPageableResponse(page, ProductDto.class);
+        return response;
     }
 
     @Override
-    public List<ProductDto> searchByTitle(String subTitle) {
-        List<Product> products = this.productRepository.findByTitleContaining(subTitle);
-        return products.stream().map(product->this.modelMapper.map(product,ProductDto.class)).collect(Collectors.toList());
+    public PageableResponse<ProductDto> searchByTitle(String subTitle,Integer pageNum, Integer pageSize, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase("dsc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        PageRequest pageable = PageRequest.of(pageNum, pageSize, sort);
+        Page<Product> page = this.productRepository.findByTitleContaining(subTitle,pageable);
+        PageableResponse<ProductDto> response = PageableHelper.getPageableResponse(page, ProductDto.class);
+        return response;
     }
 }
