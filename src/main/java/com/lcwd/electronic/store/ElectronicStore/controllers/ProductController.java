@@ -74,4 +74,15 @@ public class ProductController {
     }
 
 
+    @GetMapping("product/search/{subTitle}")
+    public ResponseEntity<PageableResponse<ProductDto>> searchByTitle(
+            @PathVariable String subTitle,
+            @RequestParam(value = "pageNum", defaultValue = PaginationConstants.PAGE_NUMBER, required = false) Integer pageNum,
+            @RequestParam(value = "pageSize", defaultValue = PaginationConstants.PAGE_SIZE, required = false) Integer pageSize,
+            @RequestParam(value = "sortBy", defaultValue = PaginationConstants.SORT_BY, required = false) String sortBy,
+            @RequestParam(value = "sortDir", defaultValue = PaginationConstants.SORT_DIR, required = false) String sortDir
+    ) {
+        PageableResponse<ProductDto> allProducts = this.productService.searchByTitle(subTitle,pageNum, pageSize, sortBy, sortDir);
+        return new ResponseEntity<>(allProducts,HttpStatus.OK);
+    }
 }
