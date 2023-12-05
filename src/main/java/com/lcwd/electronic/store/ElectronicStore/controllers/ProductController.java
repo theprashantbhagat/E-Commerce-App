@@ -11,6 +11,7 @@ import com.lcwd.electronic.store.ElectronicStore.payloads.PageableResponse;
 import com.lcwd.electronic.store.ElectronicStore.repositories.ProductRepository;
 import com.lcwd.electronic.store.ElectronicStore.services.FileService;
 import com.lcwd.electronic.store.ElectronicStore.services.ProductService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 @RestController
+@Slf4j
 @RequestMapping(UrlConstants.BASE_URL)
 public class ProductController {
 
@@ -40,31 +42,78 @@ public class ProductController {
     @Value("${product.profile.image.path}")
     private String path;
 
+    /**
+     * @apiNote this Api is for create product
+     * @author Prashant Bhagat
+     * @since V 1.0
+     * @param productDto
+     * @return
+     */
     @PostMapping("/product")
     public ResponseEntity<ProductDto> createProduct(@Valid @RequestBody ProductDto productDto){
+        log.info("Entering request for create product");
         ProductDto product = this.productService.createProduct(productDto);
+        log.info("Completed request for create product");
         return new ResponseEntity<>(product, HttpStatus.CREATED);
     }
 
+    /**
+     * @apiNote This Api is for update the product with product id
+     * @author Prashant Bhagat
+     * @since V 1.0
+     * @param productDto
+     * @param productId
+     * @return
+     */
     @PutMapping("/product/{productId}")
     public ResponseEntity<ProductDto> updateProduct(@Valid @RequestBody ProductDto productDto, @PathVariable String productId){
+        log.info("Entering request for update product with product id:{}"+productId);
         ProductDto updatedProduct = this.productService.updateProduct(productDto, productId);
+        log.info("Completed request for update product with product id:{}"+productId);
         return new ResponseEntity<>(updatedProduct,HttpStatus.OK);
     }
 
+    /**
+     * @apiNote This Api is for get the product with product id
+     * @author Prashant Bhagat
+     * @since V 1.0
+     * @param productId
+     * @return
+     */
     @GetMapping("/product/{productId}")
     public ResponseEntity<ProductDto> getProductById(@PathVariable String productId){
+        log.info("Entering request for get product with product id:{}"+productId);
         ProductDto productById = this.productService.getProductById(productId);
+        log.info("Completed request for get product with product id:{}"+productId);
         return new ResponseEntity<>(productById,HttpStatus.OK);
     }
 
+    /**
+     * @apiNote This Api is for delete the product with product id
+     * @author Prashant Bhagat
+     * @since V 1.0
+     * @param productId
+     * @return
+     */
     @DeleteMapping("/product/{productId}")
     public ResponseEntity<ApiResponse> deleteProduct(@PathVariable String productId){
+        log.info("Entering request for delete product with product id:{}"+productId);
         this.productService.deleteProduct(productId);
         ApiResponse response = ApiResponse.builder().message(AppConstants.DELETE_RESPONSE).success(true).status(HttpStatus.OK).build();
+        log.info("Completed request for delete product with product id:{}"+productId);
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
+    /**
+     * @apiNote This Api is for get all products with pagination
+     * @author Prashant Bhagat
+     * @since V 1.0
+     * @param pageNum
+     * @param pageSize
+     * @param sortBy
+     * @param sortDir
+     * @return
+     */
     @GetMapping("/product")
     public ResponseEntity<PageableResponse<ProductDto>> getAllProducts(
             @RequestParam(value = "pageNum",defaultValue = PaginationConstants.PAGE_NUMBER,required = false) Integer pageNum,
@@ -72,10 +121,22 @@ public class ProductController {
             @RequestParam(value = "sortBy",defaultValue = PaginationConstants.SORT_BY,required = false) String sortBy,
             @RequestParam(value = "sortDir",defaultValue = PaginationConstants.SORT_DIR,required = false) String sortDir
     ){
+        log.info("Entering request for get all products with pagination");
         PageableResponse<ProductDto> allProducts = this.productService.getAllProducts(pageNum, pageSize, sortBy, sortDir);
+        log.info("Completed request for get all products with pagination");
         return new ResponseEntity<PageableResponse<ProductDto>>(allProducts,HttpStatus.OK);
     }
 
+    /**
+     * @apiNote This Api is for get all live products with pagination
+     * @author Prashant Bhagat
+     * @since V 1.0
+     * @param pageNum
+     * @param pageSize
+     * @param sortBy
+     * @param sortDir
+     * @return
+     */
     @GetMapping("/product/live")
     public ResponseEntity<PageableResponse<ProductDto>> getAllLive(
             @RequestParam(value = "pageNum",defaultValue = PaginationConstants.PAGE_NUMBER,required = false) Integer pageNum,
@@ -83,11 +144,24 @@ public class ProductController {
             @RequestParam(value = "sortBy",defaultValue = PaginationConstants.SORT_BY,required = false) String sortBy,
             @RequestParam(value = "sortDir",defaultValue = PaginationConstants.SORT_DIR,required = false) String sortDir
     ){
+        log.info("Entering request for get all live products with pagination");
         PageableResponse<ProductDto> allProducts = this.productService.getAllLive(pageNum, pageSize, sortBy, sortDir);
+        log.info("Completed request for get all live products with pagination");
         return new ResponseEntity<PageableResponse<ProductDto>>(allProducts,HttpStatus.OK);
     }
 
 
+    /**
+     * @apiNote This Api is for search the product with pagination
+     * @author Prashant Bhagat
+     * @since V 1.0
+     * @param subTitle
+     * @param pageNum
+     * @param pageSize
+     * @param sortBy
+     * @param sortDir
+     * @return
+     */
     @GetMapping("product/search/{subTitle}")
     public ResponseEntity<PageableResponse<ProductDto>> searchByTitle(
             @PathVariable String subTitle,
@@ -96,29 +170,50 @@ public class ProductController {
             @RequestParam(value = "sortBy", defaultValue = PaginationConstants.SORT_BY, required = false) String sortBy,
             @RequestParam(value = "sortDir", defaultValue = PaginationConstants.SORT_DIR, required = false) String sortDir
     ) {
+        log.info("Entering request for search the products by title with pagination");
         PageableResponse<ProductDto> allProducts = this.productService.searchByTitle(subTitle,pageNum, pageSize, sortBy, sortDir);
+        log.info("Entering request for search the products by title with pagination");
         return new ResponseEntity<>(allProducts,HttpStatus.OK);
     }
 
-    //upload image
+    /**
+     * @apiNote This Api is for upload the product image with product id
+     * @author Prashant Bhagat
+     * @since V 1.0
+     * @param image
+     * @param productId
+     * @return
+     * @throws IOException
+     */
     @PostMapping("/product/image/{productId}")
     public ResponseEntity<ImageResponse> uploadProductImage(@PathVariable MultipartFile image,String productId) throws IOException {
-
+        log.info("Entering request for upload the product image with product id:{}",productId);
         String file = fileService.uploadFile(image, path);
         ProductDto product = productService.getProductById(productId);
         product.setImageName(file);
         productService.updateProduct(product,productId);
         ImageResponse imageResponse = ImageResponse.builder().imageName(file).message("product image uploaded").success(true).status(HttpStatus.OK).build();
+        log.info("Completed request for upload the product image with product id:{}",productId);
         return new ResponseEntity<>(imageResponse,HttpStatus.OK);
 
     }
 
+    /**
+     * @apiNote This Api is for serve the product image with product id
+     * @author Prashant Bhagat
+     * @since V 1.0
+     * @param productId
+     * @param response
+     * @throws IOException
+     */
     @GetMapping("/product/image/{productId}")
     public void getImage(@PathVariable String productId, HttpServletResponse response) throws IOException {
+        log.info("Entering request for get the product image with product id:{}",productId);
         ProductDto product = productService.getProductById(productId);
         InputStream resource = fileService.getResource(path, product.getImageName());
         response.setContentType(MediaType.IMAGE_JPEG_VALUE);
         StreamUtils.copy(resource,response.getOutputStream());
+        log.info("Completed request for get the product image with product id:{}",productId);
     }
 
 }
