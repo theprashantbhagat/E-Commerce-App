@@ -62,10 +62,16 @@ public class ProductController {
         return new ResponseEntity<PageableResponse<ProductDto>>(allProducts,HttpStatus.OK);
     }
 
-//    @GetMapping("product/search/{subTitle}")
-//    public ResponseEntity<List<ProductDto>> searchByTitle(String subTitle){
-//
-//        List<ProductDto> productDtos = this.productService.searchByTitle(subTitle);
-//        return new ResponseEntity<>(productDtos,HttpStatus.OK);
-//    }
+    @GetMapping("/product/live")
+    public ResponseEntity<PageableResponse<ProductDto>> getAllLive(
+            @RequestParam(value = "pageNum",defaultValue = PaginationConstants.PAGE_NUMBER,required = false) Integer pageNum,
+            @RequestParam(value = "pageSize",defaultValue = PaginationConstants.PAGE_SIZE,required = false) Integer pageSize,
+            @RequestParam(value = "sortBy",defaultValue = PaginationConstants.SORT_BY,required = false) String sortBy,
+            @RequestParam(value = "sortDir",defaultValue = PaginationConstants.SORT_DIR,required = false) String sortDir
+    ){
+        PageableResponse<ProductDto> allProducts = this.productService.getAllLive(pageNum, pageSize, sortBy, sortDir);
+        return new ResponseEntity<PageableResponse<ProductDto>>(allProducts,HttpStatus.OK);
+    }
+
+
 }
