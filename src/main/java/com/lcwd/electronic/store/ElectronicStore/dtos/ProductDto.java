@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
 
@@ -24,22 +25,21 @@ public class ProductDto {
     @Size(min=10,message = "Description is required")
     private String description;
 
-    @NotEmpty
+    @NotNull(message = "price required !!")
     private Double price;
 
-    @NotEmpty
+    @NotNull
     private Double discountedPrice;
 
-    @NotEmpty
+    @NotNull
     private Integer quantity;
 
-    @NotEmpty
     private Date addedDate;
 
-    @NotEmpty
+    @NotNull
     private Boolean live;
 
-    @NotEmpty
+    @NotNull(message = "Not in stock ")
     private Boolean stock;
 
 
