@@ -43,4 +43,7 @@ public class Product {
 
     @Column(name = "product_stock")
     private Boolean stock;
+
+    @Column(name = "product_image_name")
+    private String imageName;
 }

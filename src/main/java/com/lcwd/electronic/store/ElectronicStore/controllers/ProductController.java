@@ -6,14 +6,20 @@ import com.lcwd.electronic.store.ElectronicStore.constants.UrlConstants;
 
 import com.lcwd.electronic.store.ElectronicStore.dtos.ProductDto;
 import com.lcwd.electronic.store.ElectronicStore.payloads.ApiResponse;
+import com.lcwd.electronic.store.ElectronicStore.payloads.ImageResponse;
 import com.lcwd.electronic.store.ElectronicStore.payloads.PageableResponse;
 import com.lcwd.electronic.store.ElectronicStore.repositories.ProductRepository;
+import com.lcwd.electronic.store.ElectronicStore.services.FileService;
 import com.lcwd.electronic.store.ElectronicStore.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.validation.Valid;
+import java.io.IOException;
 
 @RestController
 @RequestMapping(UrlConstants.BASE_URL)
@@ -23,6 +29,12 @@ public class ProductController {
     private ProductService productService;
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private FileService fileService;
+
+    @Value("${product.profile.image.path}")
+    private String path;
 
     @PostMapping("/product")
     public ResponseEntity<ProductDto> createProduct(@Valid @RequestBody ProductDto productDto){
@@ -83,4 +95,19 @@ public class ProductController {
         PageableResponse<ProductDto> allProducts = this.productService.searchByTitle(subTitle,pageNum, pageSize, sortBy, sortDir);
         return new ResponseEntity<>(allProducts,HttpStatus.OK);
     }
+
+    //upload image
+    @PostMapping("/product/image/{productId}")
+    public ResponseEntity<ImageResponse> uploadProductImage(@PathVariable MultipartFile image,String productId) throws IOException {
+
+        String file = fileService.uploadFile(image, path);
+        ProductDto product = productService.getProductById(productId);
+        product.setImageName(file);
+        productService.updateProduct(product,productId);
+        ImageResponse imageResponse = ImageResponse.builder().imageName(file).message("product image uploaded").success(true).status(HttpStatus.OK).build();
+        return new ResponseEntity<>(imageResponse,HttpStatus.OK);
+
+    }
+
+
 }

@@ -1,5 +1,6 @@
 package com.lcwd.electronic.store.ElectronicStore.dtos;
 
+import com.lcwd.electronic.store.ElectronicStore.validation.ImageNameValid;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,6 +43,7 @@ public class ProductDto {
     @NotNull(message = "Not in stock ")
     private Boolean stock;
 
-
+    @ImageNameValid
+    private String imageName;
 
 }
