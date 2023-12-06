@@ -2,10 +2,7 @@ package com.lcwd.electronic.store.ElectronicStore.entities;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 @Setter
@@ -46,4 +43,8 @@ public class Product {
 
     @Column(name = "product_image_name")
     private String imageName;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "category_id")
+    private Category category;
 }

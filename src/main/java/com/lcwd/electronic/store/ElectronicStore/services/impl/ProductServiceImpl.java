@@ -55,6 +55,7 @@ public class ProductServiceImpl implements ProductService {
         product.setLive(productDto.getLive());
         product.setAddedDate(new Date());
         product.setQuantity(productDto.getQuantity());
+        product.setImageName(productDto.getImageName());
         Product updatedProduct = this.productRepository.save(product);
         log.info("Completed dao call for update product with product id:{}",productId);
         return this.modelMapper.map(updatedProduct,ProductDto.class);
