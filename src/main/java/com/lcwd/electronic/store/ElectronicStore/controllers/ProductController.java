@@ -39,7 +39,7 @@ public class ProductController {
     @Autowired
     private FileService fileService;
 
-    @Value("${product.image.path}")
+    @Value("${product.profile.image.path}")
     private String path;
 
     /**

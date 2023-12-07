@@ -40,7 +40,7 @@ public class ProductDto {
     @NotNull
     private Boolean live;
 
-    @NotNull(message = "Not in stock ")
+    @NotNull
     private Boolean stock;
 
     @ImageNameValid
