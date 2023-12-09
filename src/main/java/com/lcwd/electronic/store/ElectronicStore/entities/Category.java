@@ -29,6 +29,6 @@ public class Category {
     private String coverImage;
 
     @OneToMany(mappedBy = "category",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    List<Product> products=new ArrayList<>();
+    private List<Product> products=new ArrayList<>();
 
 }

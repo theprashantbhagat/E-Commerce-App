@@ -216,4 +216,6 @@ public class ProductController {
         log.info("Completed request for get the product image with product id:{}",productId);
     }
 
+
+
 }
