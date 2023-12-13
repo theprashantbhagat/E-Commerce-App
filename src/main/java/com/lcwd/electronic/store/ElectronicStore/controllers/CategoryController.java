@@ -169,21 +169,51 @@ public class CategoryController {
     }
 
 
+    /**
+     * @apiNote Api for create product with category id
+     * @author Prashant Bhagat
+     * @since V 1.0
+     * @param productDto
+     * @param categoryId
+     * @return
+     */
     @PostMapping("/category/{categoryId}/product")
     public ResponseEntity<ProductDto> createProductWithCategory(@RequestBody ProductDto productDto, @PathVariable String categoryId){
 
+        log.info("Entering Request for create product with category id :{}", categoryId);
         ProductDto category = this.productService.createWithCategory(productDto, categoryId);
+        log.info("Completed Request for create product with category id :{}", categoryId);
         return new ResponseEntity<>(category,HttpStatus.CREATED);
 
     }
 
+    /**
+     * @apiNote Api for update category with product id and category id
+     * @authoe Prashant Bhagat
+     * @since V 1.0
+     * @param productId
+     * @param categoryId
+     * @return
+     */
     @PutMapping("/category/{categoryId}/product/{productId}")
     public ResponseEntity<ProductDto> updateCategoryOfProduct(@PathVariable String productId,@PathVariable String categoryId){
-
+        log.info("Entering Request for update category with product id and category id :{}",productId ,categoryId);
         ProductDto productDto = productService.updateCategory(productId, categoryId);
+        log.info("Completed Request for update category with product id and category id :{}",productId ,categoryId);
         return new ResponseEntity<>(productDto,HttpStatus.OK);
     }
 
+    /**
+     * @apiNote Api for get all products with category id
+     * @author Prashant Bhagat
+     * @since V 1.0
+     * @param categoryId
+     * @param pageNumber
+     * @param pageSize
+     * @param sortBy
+     * @param sortDir
+     * @return
+     */
     @GetMapping("/category/{categoryId}/products")
     public ResponseEntity<PageableResponse<ProductDto>> getProductsOfCategory(
             @PathVariable String categoryId,
@@ -193,7 +223,12 @@ public class CategoryController {
             @RequestParam(value = "sortDir", defaultValue = PaginationConstants.SORT_DIR, required = false) String sortDir
             ) {
 
+        log.info("Entering Request for get all products of with category id:{}",categoryId);
         PageableResponse<ProductDto> allOfCategory = this.productService.getAllOfCategory(categoryId, pageNumber, pageSize, sortBy, sortDir);
+        log.info("Completed Request for get all products of with category id:{}",categoryId);
         return new ResponseEntity<>(allOfCategory,HttpStatus.OK);
     }
+
+
+
 }

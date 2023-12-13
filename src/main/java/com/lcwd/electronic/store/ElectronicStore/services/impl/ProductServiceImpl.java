@@ -128,21 +128,25 @@ public class ProductServiceImpl implements ProductService {
 
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException(AppConstants.NOT_FOUND + " id " + categoryId));
         String productId = UUID.randomUUID().toString();
+        log.info("Initiating dao call for create product with category id:{}",categoryId);
         productDto.setProductId(productId);
         Product product = this.modelMapper.map(productDto, Product.class);
         product.setAddedDate(new Date());
         product.setCategory(category);
         Product save = this.productRepository.save(product);
+        log.info("Completed dao call for create product with category id:{}",categoryId);
         return this.modelMapper.map(save,ProductDto.class);
     }
 
     @Override
     public ProductDto updateCategory(String productId, String categoryId) {
 
+        log.info("Initiating dao call for update category with product id and category id:{}",productId,categoryId);
         Category category = this.categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException(AppConstants.NOT_FOUND + " id " + categoryId));
         Product product = this.productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException(AppConstants.NOT_FOUND + " id " + productId));
         product.setCategory(category);
         Product savedProduct = productRepository.save(product);
+        log.info("Completed dao call for update category with product id and category id:{}",productId,categoryId);
         return this.modelMapper.map(savedProduct,ProductDto.class);
     }
 
@@ -151,9 +155,11 @@ public class ProductServiceImpl implements ProductService {
 
         Sort sort = sortDir.equalsIgnoreCase("dsc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         PageRequest pageable = PageRequest.of(pageNum, pageSize, sort);
+        log.info("Initiating dao call for get all products by category id:{}",categoryId);
         Category category = this.categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException(AppConstants.NOT_FOUND + " id " + categoryId));
         Page<Product> byCategory = this.productRepository.findByCategory(category,pageable);
         PageableResponse<ProductDto> response = PageableHelper.getPageableResponse(byCategory, ProductDto.class);
+        log.info("Initiating dao call for get all products by category id:{}",categoryId);
         return response;
 
     }
