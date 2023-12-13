@@ -144,7 +144,6 @@ public class ProductServiceImpl implements ProductService {
         product.setCategory(category);
         Product savedProduct = productRepository.save(product);
         return this.modelMapper.map(savedProduct,ProductDto.class);
-
     }
 
     @Override

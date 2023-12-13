@@ -189,7 +189,7 @@ public class CategoryController {
             @PathVariable String categoryId,
             @RequestParam(value = "pageNum", defaultValue = PaginationConstants.PAGE_NUMBER, required = false) Integer pageNumber,
             @RequestParam(value = "pageSize", defaultValue = PaginationConstants.PAGE_SIZE, required = false) Integer pageSize,
-            @RequestParam(value = "sortBy", defaultValue = PaginationConstants.SORT_BY, required = false) String sortBy,
+            @RequestParam(value = "sortBy", defaultValue = PaginationConstants.CATEGORY_SORT_BY, required = false) String sortBy,
             @RequestParam(value = "sortDir", defaultValue = PaginationConstants.SORT_DIR, required = false) String sortDir
             ) {
 

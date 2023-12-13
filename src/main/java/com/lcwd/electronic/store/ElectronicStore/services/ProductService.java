@@ -28,7 +28,7 @@ public interface ProductService {
     //update category of product
     ProductDto updateCategory(String productId,String categoryId);
 
-    //
+    //get category containing all the products
     PageableResponse<ProductDto> getAllOfCategory(String categoryId,Integer pageNum, Integer pageSize, String sortBy, String sortDir);
 
 
