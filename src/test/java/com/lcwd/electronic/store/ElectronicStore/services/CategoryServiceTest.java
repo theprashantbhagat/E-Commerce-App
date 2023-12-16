@@ -7,6 +7,7 @@ import com.lcwd.electronic.store.ElectronicStore.entities.Product;
 import com.lcwd.electronic.store.ElectronicStore.entities.User;
 import com.lcwd.electronic.store.ElectronicStore.payloads.PageableResponse;
 import com.lcwd.electronic.store.ElectronicStore.repositories.CategoryRepository;
+import com.lcwd.electronic.store.ElectronicStore.repositories.ProductRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,6 +30,11 @@ public class CategoryServiceTest {
     @MockBean
     private CategoryRepository categoryRepository;
 
+    @MockBean
+    private ProductRepository productRepository;
+
+    @Autowired
+    private ProductService productService;
     @Autowired
     private CategoryService categoryService;
 
@@ -121,6 +127,15 @@ public class CategoryServiceTest {
         categoryService.deleteCategory(categoryId);
 
     }
+    @Test
+    public void createWithCategoryTest(){
+
+        String categoryId="catAbc";
+
+
+    }
+
+
 
 
 }
