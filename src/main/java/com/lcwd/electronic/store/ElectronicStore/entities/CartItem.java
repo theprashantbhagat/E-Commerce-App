@@ -10,15 +10,18 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Table(name = "cart_items")
 public class CartItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer cartItemId;
 
+    @Column(name = "cart_item_quantity")
     private Integer quantity;
 
-    private Integer totalPrice;
+    @Column(name = "cart_item_total_price")
+    private Double totalPrice;
 
     @OneToOne
     @JoinColumn(name = "product_id")

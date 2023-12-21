@@ -13,11 +13,13 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Table(name = "carts")
 public class Cart {
 
     @Id
     private String cartId;
 
+    @Column(name = "cart_created_at")
     private Date createdAt;
 
     @OneToOne
