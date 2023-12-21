@@ -29,7 +29,7 @@ public class CartController {
     {
         cartService.removeItemFromCart(userId,cartItemId);
         ApiResponse response = ApiResponse.builder()
-                .message(AppConstants.DELETE_RESPONSE).success(true).status(HttpStatus.OK).build();
+                .message(AppConstants.DELETE_CART_RESPONSE).success(true).status(HttpStatus.OK).build();
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
@@ -38,7 +38,7 @@ public class CartController {
 
         cartService.clearCart(userId);
         ApiResponse response = ApiResponse.builder()
-                .message(AppConstants.DELETE_RESPONSE).success(true).status(HttpStatus.OK).build();
+                .message(AppConstants.DELETE_CART_RESPONSE).success(true).status(HttpStatus.OK).build();
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 

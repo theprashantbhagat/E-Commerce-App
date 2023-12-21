@@ -8,6 +8,8 @@ public class PaginationConstants {
 
     public static final String SORT_BY="userName";
 
+    public static final String ORDER_SORT_BY="orderDate";
+
     public static final String CATEGORY_SORT_BY="title";
     public static final String SORT_DIR="asc";
 }

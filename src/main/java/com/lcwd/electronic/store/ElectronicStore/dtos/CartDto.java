@@ -1,6 +1,10 @@
 package com.lcwd.electronic.store.ElectronicStore.dtos;
+import com.lcwd.electronic.store.ElectronicStore.entities.CartItem;
 import lombok.*;
+
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Setter
 @Getter
@@ -14,4 +18,6 @@ public class CartDto {
     private Date createdAt;
 
     private UserDto user;
+
+    private List<CartItemDto> items=new ArrayList<>();
 }
