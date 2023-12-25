@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -32,6 +33,8 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Value("${user.profile.image.path}")
     private String path;
@@ -40,7 +43,7 @@ public class UserServiceImpl implements UserService {
     public UserDto createUser(UserDto userDto) {
         String userId = UUID.randomUUID().toString();
         userDto.setUserId(userId);
-
+        userDto.setUserPassword(passwordEncoder.encode(userDto.getUserPassword()));
         log.info("Initiating Dao Call For Save User Data");
         User user = this.modelMapper.map(userDto, User.class);
         User saveUser = userRepository.save(user);

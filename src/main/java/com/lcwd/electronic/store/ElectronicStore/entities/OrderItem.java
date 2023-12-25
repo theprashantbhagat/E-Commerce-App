@@ -14,6 +14,7 @@ import javax.persistence.*;
 public class OrderItem {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer orderItemId;
     private Integer quantity;
     private Double totalPrice;

@@ -22,7 +22,7 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<OrderDto> createOrder(@RequestBody CreateOrderRequest request)
     {
         OrderDto order = orderService.createOrder(request);
