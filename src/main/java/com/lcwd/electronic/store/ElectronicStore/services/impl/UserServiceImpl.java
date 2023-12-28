@@ -2,10 +2,12 @@ package com.lcwd.electronic.store.ElectronicStore.services.impl;
 
 import com.lcwd.electronic.store.ElectronicStore.constants.AppConstants;
 import com.lcwd.electronic.store.ElectronicStore.dtos.UserDto;
+import com.lcwd.electronic.store.ElectronicStore.entities.Role;
 import com.lcwd.electronic.store.ElectronicStore.entities.User;
 import com.lcwd.electronic.store.ElectronicStore.exceptions.ResourceNotFoundException;
 import com.lcwd.electronic.store.ElectronicStore.helper.PageableHelper;
 import com.lcwd.electronic.store.ElectronicStore.payloads.PageableResponse;
+import com.lcwd.electronic.store.ElectronicStore.repositories.RoleRepository;
 import com.lcwd.electronic.store.ElectronicStore.repositories.UserRepository;
 import com.lcwd.electronic.store.ElectronicStore.services.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -39,6 +42,15 @@ public class UserServiceImpl implements UserService {
     @Value("${user.profile.image.path}")
     private String path;
 
+    @Value("${normal.role.id}")
+    private String normalRoleId;
+
+    @Value("${admin.role.id}")
+    private String adminRoleId;
+
+    @Autowired
+    private RoleRepository roleRepository;
+
     @Override
     public UserDto createUser(UserDto userDto) {
         String userId = UUID.randomUUID().toString();
@@ -46,7 +58,11 @@ public class UserServiceImpl implements UserService {
         userDto.setUserPassword(passwordEncoder.encode(userDto.getUserPassword()));
         log.info("Initiating Dao Call For Save User Data");
         User user = this.modelMapper.map(userDto, User.class);
+        //fetch role of normal and set it to user
+        Role role = roleRepository.findById(normalRoleId).get();
+        user.getRoles().add(role);
         User saveUser = userRepository.save(user);
+
         log.info("Completed Dao Call For Save User Data");
         return this.modelMapper.map(saveUser, UserDto.class);
     }
@@ -114,6 +130,12 @@ public class UserServiceImpl implements UserService {
         List<User> users = this.userRepository.findByUserNameContaining(keyword);
         log.info("Completed Dao call for search the user with keyword {}:",keyword);
         return users.stream().map(user -> this.modelMapper.map(user, UserDto.class)).collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<User> findUserByEmailOptional(String email) {
+
+        return userRepository.findByUserEmail(email);
     }
 
 

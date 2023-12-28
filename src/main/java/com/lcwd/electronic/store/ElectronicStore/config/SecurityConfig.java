@@ -1,11 +1,18 @@
 package com.lcwd.electronic.store.ElectronicStore.config;
 
+import com.lcwd.electronic.store.ElectronicStore.security.JwtAuthenticationEntryPoint;
+import com.lcwd.electronic.store.ElectronicStore.security.JwtAuthenticationFilter;
 import com.lcwd.electronic.store.ElectronicStore.services.CustomUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,8 +20,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig  {
 
 //    @Bean
@@ -38,6 +47,10 @@ public class SecurityConfig  {
 //    }
 
 
+    @Autowired
+    private JwtAuthenticationEntryPoint authenticationEntryPoint;
+    @Autowired
+    private JwtAuthenticationFilter authenticationFilter;
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -73,11 +86,21 @@ public class SecurityConfig  {
                 .cors()
                 .disable()
                 .authorizeRequests()
+                .antMatchers("/auth/login")
+                .permitAll()
+                .antMatchers(HttpMethod.POST,"/api/users")
+                .permitAll()
+                .antMatchers(HttpMethod.DELETE,"/api/users/**").hasRole("ADMIN")
                 .anyRequest()
                 .authenticated()
                 .and()
-                .httpBasic();
+                .exceptionHandling()
+                .authenticationEntryPoint(authenticationEntryPoint)
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
+        http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
 
 
@@ -88,5 +111,11 @@ public class SecurityConfig  {
     public PasswordEncoder passwordEncoder(){
 
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+
+        return configuration.getAuthenticationManager();
     }
 }

@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -49,6 +50,8 @@ public class ProductController {
      * @param productDto
      * @return
      */
+
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/product")
     public ResponseEntity<ProductDto> createProduct(@Valid @RequestBody ProductDto productDto){
         log.info("Entering request for create product");
@@ -65,6 +68,7 @@ public class ProductController {
      * @param productId
      * @return
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/product/{productId}")
     public ResponseEntity<ProductDto> updateProduct(@Valid @RequestBody ProductDto productDto, @PathVariable String productId){
         log.info("Entering request for update product with product id:{}"+productId);
@@ -80,6 +84,7 @@ public class ProductController {
      * @param productId
      * @return
      */
+
     @GetMapping("/product/{productId}")
     public ResponseEntity<ProductDto> getProductById(@PathVariable String productId){
         log.info("Entering request for get product with product id:{}"+productId);
@@ -95,6 +100,7 @@ public class ProductController {
      * @param productId
      * @return
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/product/{productId}")
     public ResponseEntity<ApiResponse> deleteProduct(@PathVariable String productId){
         log.info("Entering request for delete product with product id:{}"+productId);
@@ -185,6 +191,7 @@ public class ProductController {
      * @return
      * @throws IOException
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/product/image/{productId}")
     public ResponseEntity<ImageResponse> uploadProductImage(@PathVariable MultipartFile image,String productId) throws IOException {
         log.info("Entering request for upload the product image with product id:{}",productId);

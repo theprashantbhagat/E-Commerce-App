@@ -1,9 +1,11 @@
 package com.lcwd.electronic.store.ElectronicStore.services;
 
 import com.lcwd.electronic.store.ElectronicStore.dtos.UserDto;
+import com.lcwd.electronic.store.ElectronicStore.entities.User;
 import com.lcwd.electronic.store.ElectronicStore.payloads.PageableResponse;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserService {
 
@@ -21,5 +23,6 @@ public interface UserService {
 
     List<UserDto> searchUser(String keyword);
 
+    Optional<User> findUserByEmailOptional(String email);
 
 }

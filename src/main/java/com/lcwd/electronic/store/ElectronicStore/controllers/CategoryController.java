@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -49,6 +50,7 @@ public class CategoryController {
      * @author Prashant Bhagat
      * @since V 1.0
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/category")
     public ResponseEntity<CategoryDto> createCategory(@Valid @RequestBody CategoryDto categoryDto) {
         log.info("Entering request for create category data");
@@ -65,6 +67,7 @@ public class CategoryController {
      * @author Prashant Bhagat
      * @since V 1.0
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/category/{categoryId}")
     public ResponseEntity<CategoryDto> updateCategory(@Valid @RequestBody CategoryDto categoryDto, @PathVariable String categoryId) {
         log.info("Entering request for update the category data with category id :{}", categoryId);
@@ -119,6 +122,7 @@ public class CategoryController {
      * @author Prashant Bhagat
      * @since V 1.0
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/category/{categoryId}")
     public ResponseEntity<ApiResponse> deleteCategory(@PathVariable String categoryId) {
         log.info("Entering Request for delete the category with category id:{}", categoryId);
@@ -137,6 +141,7 @@ public class CategoryController {
      * @author Prashant Bhagat
      * @since V 1.0
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/category/image/{categoryId}")
     public ResponseEntity<ImageResponse> uploadCoverImage(@RequestParam MultipartFile image, @PathVariable String categoryId) throws IOException {
 
@@ -177,6 +182,8 @@ public class CategoryController {
      * @param categoryId
      * @return
      */
+
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/category/{categoryId}/product")
     public ResponseEntity<ProductDto> createProductWithCategory(@RequestBody ProductDto productDto, @PathVariable String categoryId){
 
@@ -195,6 +202,7 @@ public class CategoryController {
      * @param categoryId
      * @return
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/category/{categoryId}/product/{productId}")
     public ResponseEntity<ProductDto> updateCategoryOfProduct(@PathVariable String productId,@PathVariable String categoryId){
         log.info("Entering Request for update category with product id and category id :{}",productId ,categoryId);
