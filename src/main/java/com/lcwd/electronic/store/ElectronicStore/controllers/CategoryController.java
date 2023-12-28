@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 @RestController
-@RequestMapping(UrlConstants.BASE_URL)
+@RequestMapping(UrlConstants.BASE_URL + UrlConstants.CATEGORY_BASE)
 @Slf4j
 public class CategoryController {
 
@@ -51,7 +51,7 @@ public class CategoryController {
      * @since V 1.0
      */
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/category")
+    @PostMapping("/")
     public ResponseEntity<CategoryDto> createCategory(@Valid @RequestBody CategoryDto categoryDto) {
         log.info("Entering request for create category data");
         CategoryDto category = this.categoryService.createCategory(categoryDto);
@@ -68,7 +68,7 @@ public class CategoryController {
      * @since V 1.0
      */
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/category/{categoryId}")
+    @PutMapping("/{categoryId}")
     public ResponseEntity<CategoryDto> updateCategory(@Valid @RequestBody CategoryDto categoryDto, @PathVariable String categoryId) {
         log.info("Entering request for update the category data with category id :{}", categoryId);
         CategoryDto updateCategory = this.categoryService.updateCategory(categoryDto, categoryId);
@@ -83,7 +83,7 @@ public class CategoryController {
      * @author Prashant Bhagat
      * @since V 1.0
      */
-    @GetMapping("/category/{categoryId}")
+    @GetMapping("/{categoryId}")
     public ResponseEntity<CategoryDto> getCategoryById(@PathVariable String categoryId) {
         log.info("Entering request for get category by id :{}", categoryId);
         CategoryDto categoryById = this.categoryService.getCategoryById(categoryId);
@@ -102,7 +102,7 @@ public class CategoryController {
      * @author Prashant Bhagat
      * @since V 1.0
      */
-    @GetMapping("/categories")
+    @GetMapping("/")
     public ResponseEntity<PageableResponse<CategoryDto>> getAllCategories(
             @RequestParam(value = "pageNumber", defaultValue = PaginationConstants.PAGE_NUMBER, required = false) Integer pageNumber,
             @RequestParam(value = "pageSize", defaultValue = PaginationConstants.PAGE_SIZE, required = false) Integer pageSize,
@@ -123,7 +123,7 @@ public class CategoryController {
      * @since V 1.0
      */
     @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/category/{categoryId}")
+    @DeleteMapping("/{categoryId}")
     public ResponseEntity<ApiResponse> deleteCategory(@PathVariable String categoryId) {
         log.info("Entering Request for delete the category with category id:{}", categoryId);
         this.categoryService.deleteCategory(categoryId);
@@ -142,7 +142,7 @@ public class CategoryController {
      * @since V 1.0
      */
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/category/image/{categoryId}")
+    @PostMapping("/image/{categoryId}")
     public ResponseEntity<ImageResponse> uploadCoverImage(@RequestParam MultipartFile image, @PathVariable String categoryId) throws IOException {
 
         log.info("Entering request for upload cover image with category id :{}", categoryId);
@@ -163,7 +163,7 @@ public class CategoryController {
      * @author Prashant Bhagat
      * @since V 1.0
      */
-    @GetMapping("/category/image/{categoryId}")
+    @GetMapping("/image/{categoryId}")
     public void serveCoverImage(@PathVariable String categoryId, HttpServletResponse response) throws IOException {
         log.info("Entering Request for get cover image with category id :{}", categoryId);
         CategoryDto category = categoryService.getCategoryById(categoryId);
@@ -175,68 +175,67 @@ public class CategoryController {
 
 
     /**
-     * @apiNote Api for create product with category id
-     * @author Prashant Bhagat
-     * @since V 1.0
      * @param productDto
      * @param categoryId
      * @return
+     * @apiNote Api for create product with category id
+     * @author Prashant Bhagat
+     * @since V 1.0
      */
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/category/{categoryId}/product")
-    public ResponseEntity<ProductDto> createProductWithCategory(@RequestBody ProductDto productDto, @PathVariable String categoryId){
+    @PostMapping("/{categoryId}/product")
+    public ResponseEntity<ProductDto> createProductWithCategory(@RequestBody ProductDto productDto, @PathVariable String categoryId) {
 
         log.info("Entering Request for create product with category id :{}", categoryId);
         ProductDto category = this.productService.createWithCategory(productDto, categoryId);
         log.info("Completed Request for create product with category id :{}", categoryId);
-        return new ResponseEntity<>(category,HttpStatus.CREATED);
+        return new ResponseEntity<>(category, HttpStatus.CREATED);
 
     }
 
     /**
-     * @apiNote Api for update category with product id and category id
-     * @authoe Prashant Bhagat
-     * @since V 1.0
      * @param productId
      * @param categoryId
      * @return
+     * @apiNote Api for update category with product id and category id
+     * @authoe Prashant Bhagat
+     * @since V 1.0
      */
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/category/{categoryId}/product/{productId}")
-    public ResponseEntity<ProductDto> updateCategoryOfProduct(@PathVariable String productId,@PathVariable String categoryId){
-        log.info("Entering Request for update category with product id and category id :{}",productId ,categoryId);
+    @PutMapping("/{categoryId}/product/{productId}")
+    public ResponseEntity<ProductDto> updateCategoryOfProduct(@PathVariable String productId, @PathVariable String categoryId) {
+        log.info("Entering Request for update category with product id and category id :{}", productId, categoryId);
         ProductDto productDto = productService.updateCategory(productId, categoryId);
-        log.info("Completed Request for update category with product id and category id :{}",productId ,categoryId);
-        return new ResponseEntity<>(productDto,HttpStatus.OK);
+        log.info("Completed Request for update category with product id and category id :{}", productId, categoryId);
+        return new ResponseEntity<>(productDto, HttpStatus.OK);
     }
 
     /**
-     * @apiNote Api for get all products with category id
-     * @author Prashant Bhagat
-     * @since V 1.0
      * @param categoryId
      * @param pageNumber
      * @param pageSize
      * @param sortBy
      * @param sortDir
      * @return
+     * @apiNote Api for get all products with category id
+     * @author Prashant Bhagat
+     * @since V 1.0
      */
-    @GetMapping("/category/{categoryId}/products")
+    @GetMapping("/{categoryId}/products")
     public ResponseEntity<PageableResponse<ProductDto>> getProductsOfCategory(
             @PathVariable String categoryId,
             @RequestParam(value = "pageNum", defaultValue = PaginationConstants.PAGE_NUMBER, required = false) Integer pageNumber,
             @RequestParam(value = "pageSize", defaultValue = PaginationConstants.PAGE_SIZE, required = false) Integer pageSize,
             @RequestParam(value = "sortBy", defaultValue = PaginationConstants.CATEGORY_SORT_BY, required = false) String sortBy,
             @RequestParam(value = "sortDir", defaultValue = PaginationConstants.SORT_DIR, required = false) String sortDir
-            ) {
+    ) {
 
-        log.info("Entering Request for get all products of with category id:{}",categoryId);
+        log.info("Entering Request for get all products of with category id:{}", categoryId);
         PageableResponse<ProductDto> allOfCategory = this.productService.getAllOfCategory(categoryId, pageNumber, pageSize, sortBy, sortDir);
-        log.info("Completed Request for get all products of with category id:{}",categoryId);
-        return new ResponseEntity<>(allOfCategory,HttpStatus.OK);
+        log.info("Completed Request for get all products of with category id:{}", categoryId);
+        return new ResponseEntity<>(allOfCategory, HttpStatus.OK);
     }
-
 
 
 }

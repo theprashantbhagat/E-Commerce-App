@@ -29,7 +29,6 @@ import java.security.Principal;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/auth")
@@ -57,14 +56,16 @@ public class AuthController {
 
     @GetMapping("/current")
     public ResponseEntity<UserDetails> getCurrentUser(Principal principal) {
-
+        log.info("Entering request for get current user");
         String name = principal.getName();
+        log.info("Completed request for get current user");
         return new ResponseEntity<>(userDetailsService.loadUserByUsername(name), HttpStatus.OK);
     }
 
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> login(@RequestBody JwtRequest request) {
 
+        log.info("Entering request for login");
         this.doAuthenticate(request.getEmail(), request.getPassword());
         UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
         String token = this.helper.generateToken(userDetails);
@@ -74,6 +75,7 @@ public class AuthController {
                 .jwtToken(token)
                 .user(userDto)
                 .build();
+        log.info("Completed request for login");
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -90,6 +92,7 @@ public class AuthController {
     @PostMapping("/google")
     public ResponseEntity<JwtResponse> loginWithGoogle(@RequestBody Map<String, Object> data) throws IOException {
 
+        log.info("Entering request for login with google");
         //get idToken from request
         String idToken = data.get("idToken").toString();
         NetHttpTransport netHttpTransport = new NetHttpTransport();
@@ -111,8 +114,9 @@ public class AuthController {
         }
 
         ResponseEntity<JwtResponse> jwtResponseResponseEntity = this.login(JwtRequest.builder().email(user.getUserEmail()).password(newPassword).build());
-
+        log.info("Completed request for login with google");
         return jwtResponseResponseEntity;
+
     }
 
     private User saveUser(String email, String name, String photoUrl) {

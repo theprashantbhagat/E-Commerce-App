@@ -26,7 +26,7 @@ import java.io.InputStream;
 import java.util.List;
 
 @RestController
-@RequestMapping(UrlConstants.BASE_URL)
+@RequestMapping(UrlConstants.BASE_URL + UrlConstants.USER_BASE)
 @Slf4j
 public class UserController {
 
@@ -47,7 +47,7 @@ public class UserController {
      * @since V1.0
      */
 
-    @PostMapping("/users")
+    @PostMapping("/")
     public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto) {
         log.info("Entering Request For Save User Data");
         UserDto createUserDto = this.userService.createUser(userDto);
@@ -63,7 +63,7 @@ public class UserController {
      * @author Prashant Bhagat
      * @since V 1.0
      */
-    @PutMapping("/users/{userId}")
+    @PutMapping("/{userId}")
     public ResponseEntity<UserDto> updateUser(@Valid @RequestBody UserDto userDto, @PathVariable String userId) {
         log.info("Entering request for update user data with userId {}:", userId);
         UserDto updatedUser = this.userService.updateUser(userDto, userId);
@@ -78,7 +78,7 @@ public class UserController {
      * @author Prashant Bhagat
      * @since V 1.0
      */
-    @DeleteMapping("/users/{userId}")
+    @DeleteMapping("/{userId}")
     public ResponseEntity<ApiResponse> deleteUser(@PathVariable String userId) {
         log.info("Entering request for delete the user with userId {}:", userId);
         this.userService.deleteUser(userId);
@@ -94,7 +94,7 @@ public class UserController {
      * @author Prashant Bhagat
      * @since V 1.0
      */
-    @GetMapping("/users/{userId}")
+    @GetMapping("/{userId}")
     public ResponseEntity<UserDto> getUserById(@PathVariable String userId) {
         log.info("Entering request for get the user data with userId {}:", userId);
         UserDto user = this.userService.getUserById(userId);
@@ -112,7 +112,7 @@ public class UserController {
      * @author Prashant Bhagat
      * @since V 1.0
      */
-    @GetMapping("/users")
+    @GetMapping("/")
     public ResponseEntity<PageableResponse<UserDto>> getAllUsers(
             @RequestParam(value = "pageNumber", defaultValue = PaginationConstants.PAGE_NUMBER, required = false) Integer pageNumber,
             @RequestParam(value = "pageSize", defaultValue = PaginationConstants.PAGE_SIZE, required = false) Integer pageSize,
@@ -131,7 +131,7 @@ public class UserController {
      * @author Prashant Bhagat
      * @since V 1.0
      */
-    @GetMapping("/users/email/{userEmail}")
+    @GetMapping("/email/{userEmail}")
     public ResponseEntity<UserDto> getUserByEmail(@PathVariable String userEmail) {
         log.info("Entering request for get user by email {}:", userEmail);
         UserDto userByEmail = this.userService.getUserByEmail(userEmail);
@@ -146,7 +146,7 @@ public class UserController {
      * @author Prashant Bhagat
      * @since V 1.0
      */
-    @GetMapping("/users/search/{keyword}")
+    @GetMapping("/search/{keyword}")
     public ResponseEntity<List<UserDto>> searchUser(@PathVariable String keyword) {
         log.info("Entering request for search the user with keyword {}:", keyword);
         List<UserDto> userDtos = this.userService.searchUser(keyword);
@@ -163,7 +163,7 @@ public class UserController {
      * @author Prashant Bhagat
      * @since V 1.0
      */
-    @PostMapping("/users/image/{userId}")
+    @PostMapping("/image/{userId}")
     public ResponseEntity<ImageResponse> uploadUserImage(@RequestParam MultipartFile image, @PathVariable String userId) throws IOException {
         log.info("Entering Request for upload the user image with user id:{}", userId);
         String file = fileService.uploadFile(image, imageUploadPath);
@@ -183,7 +183,7 @@ public class UserController {
      * @author Prashant Bhagat
      * @since V 1.0
      */
-    @GetMapping("/users/image/{userId}")
+    @GetMapping("/image/{userId}")
     public void downloadImage(@PathVariable String userId, HttpServletResponse response) throws IOException {
         log.info("Entering request for download the user image with user id :{}", userId);
         UserDto user = userService.getUserById(userId);
