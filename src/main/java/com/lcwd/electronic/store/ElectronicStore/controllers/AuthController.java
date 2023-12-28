@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/auth")
 @Slf4j
+@CrossOrigin("*")
 public class AuthController {
 
     @Autowired
