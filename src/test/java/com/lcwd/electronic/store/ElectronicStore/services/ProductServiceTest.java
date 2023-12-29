@@ -54,7 +54,7 @@ public class ProductServiceTest {
         Mockito.when(productRepository.save(Mockito.any())).thenReturn(product);
         ProductDto productDto1 = productService.createProduct(modelMapper.map(product, ProductDto.class));
         Assertions.assertNotNull(productDto1);
-        Assertions.assertEquals("MyPhone",productDto1.getTitle());
+        Assertions.assertEquals("MyPhone 15",productDto1.getTitle());
     }
 
     @Test

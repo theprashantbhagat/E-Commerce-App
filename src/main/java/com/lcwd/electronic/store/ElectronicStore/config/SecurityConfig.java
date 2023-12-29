@@ -90,7 +90,7 @@ public class SecurityConfig  {
                 .permitAll()
                 .antMatchers("/auth/google")
                 .permitAll()
-                .antMatchers(HttpMethod.POST,"/api/users")
+                .antMatchers(HttpMethod.POST,"/api/users/")
                 .permitAll()
                 .antMatchers(HttpMethod.DELETE,"/api/users/**").hasRole("ADMIN")
                 .anyRequest()

@@ -3,9 +3,9 @@ package com.lcwd.electronic.store.ElectronicStore.controllers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lcwd.electronic.store.ElectronicStore.dtos.UserDto;
+import com.lcwd.electronic.store.ElectronicStore.entities.Role;
 import com.lcwd.electronic.store.ElectronicStore.entities.User;
 import com.lcwd.electronic.store.ElectronicStore.payloads.PageableResponse;
-import com.lcwd.electronic.store.ElectronicStore.repositories.UserRepository;
 import com.lcwd.electronic.store.ElectronicStore.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Arrays;
-
+import java.util.Set;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -37,38 +37,51 @@ public class UserControllerTest {
     @Autowired
     private ModelMapper modelMapper;
 
-    private User user;
+     User user;
+
+    User user1;
+    Role role;
+
 
 
     @BeforeEach
     public void init(){
-    user = User.builder()
-                .userName("prashant")
+        role = Role.builder().roleId("abc").roleName("NORMAL").build();
+        user = User.builder()
+                .name("prashant")
                 .userEmail("Pb@gmail.com")
                 .userGender("male")
                 .userAbout("java developer")
                 .userImageName("abc.png")
                 .userPassword("Pass@123")
+                .roles(Set.of(role))
+                .build();
+        user1 = User.builder()
+                .name("prashant")
+                .userEmail("Pb@gmail.com")
+                .userGender("male")
+                .userAbout("java developer")
+                .userImageName("abc.png")
+                .userPassword("Pass@123")
+                .roles(Set.of(role))
                 .build();
     }
 
     @Test
     public void createUserTest() throws Exception {
-
-        UserDto dto = modelMapper.map(user,UserDto.class);
+        UserDto dto=modelMapper.map(user1,UserDto.class);
         Mockito.when(userService.createUser(Mockito.any())).thenReturn(dto);
 
         this.mockMvc.perform(
-                MockMvcRequestBuilders.post("/api/users")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(convertObjectToJsonString(user))
-                        .accept(MediaType.APPLICATION_JSON)
-        ).andDo(print())
+                        MockMvcRequestBuilders.post("/api/users/")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(convertObjectToJsonString(user))
+                                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.userName").exists());
+                .andExpect(jsonPath("$.userGender").exists());
 
-    }
-
+}
     private String convertObjectToJsonString(Object user) throws JsonProcessingException {
 
         try {
@@ -94,15 +107,15 @@ public class UserControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.userName").exists());
+                .andExpect(jsonPath("$.name").exists());
     }
 
     @Test
     public void getAllUserTest() throws Exception {
 
-        UserDto userDto = UserDto.builder().userName("prashant").userEmail("pb@gmail.com").userAbout("java developer").userGender("male").userPassword("abc").userImageName("pb.png").build();
-        UserDto userDto1 = UserDto.builder().userName("kunal").userEmail("kh@gmail.com").userAbout("soft tester").userGender("male").userPassword("def").userImageName("kh.png").build();
-        UserDto userDto2 = UserDto.builder().userName("manish").userEmail("Md@gmail.com").userAbout("Data scientist").userGender("male").userPassword("ghi").userImageName("md.png").build();
+        UserDto userDto = UserDto.builder().name("prashant").userEmail("pb@gmail.com").userAbout("java developer").userGender("male").userPassword("abc").userImageName("pb.png").build();
+        UserDto userDto1 = UserDto.builder().name("kunal").userEmail("kh@gmail.com").userAbout("soft tester").userGender("male").userPassword("def").userImageName("kh.png").build();
+        UserDto userDto2 = UserDto.builder().name("manish").userEmail("Md@gmail.com").userAbout("Data scientist").userGender("male").userPassword("ghi").userImageName("md.png").build();
         PageableResponse<UserDto> pagResponse=new PageableResponse<>();
 
         pagResponse.setContent(Arrays.asList(userDto,userDto1,userDto2));
@@ -159,7 +172,7 @@ public class UserControllerTest {
     public void searchUserTest() throws Exception {
 
         UserDto user1 = UserDto.builder()
-                .userName("santosh bikkad")
+                .name("santosh bikkad")
                 .userEmail("Pb@gmail.com")
                 .userGender("male")
                 .userAbout("java developer")
@@ -168,7 +181,7 @@ public class UserControllerTest {
                 .build();
 
         UserDto user2 = UserDto.builder()
-                .userName("atul")
+                .name("atul")
                 .userEmail("Pb@gmail.com")
                 .userGender("male")
                 .userAbout("java developer")

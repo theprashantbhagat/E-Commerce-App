@@ -1,8 +1,10 @@
 package com.lcwd.electronic.store.ElectronicStore.services;
 
 import com.lcwd.electronic.store.ElectronicStore.dtos.UserDto;
+import com.lcwd.electronic.store.ElectronicStore.entities.Role;
 import com.lcwd.electronic.store.ElectronicStore.entities.User;
 import com.lcwd.electronic.store.ElectronicStore.payloads.PageableResponse;
+import com.lcwd.electronic.store.ElectronicStore.repositories.RoleRepository;
 import com.lcwd.electronic.store.ElectronicStore.repositories.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,12 +21,15 @@ import org.springframework.data.domain.Pageable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @SpringBootTest
 public class UserServiceTest {
 
     @MockBean
     private UserRepository userRepository;
+    @MockBean
+    private RoleRepository roleRepository;
 
 
     @Autowired
@@ -35,26 +40,35 @@ public class UserServiceTest {
 
     User user;
 
+    Role role;
+
+    String roleId;
+
     @BeforeEach
     public void init(){
+        role=Role.builder().roleId("abc").roleName("NORMAL").build();
         user = User.builder()
-                .userName("prashant")
+                .name("prashant")
                 .userEmail("Pb@gmail.com")
                 .userGender("male")
                 .userAbout("java developer")
                 .userImageName("abc.png")
                 .userPassword("abc")
+                .roles(Set.of(role))
                 .build();
+
+        roleId="abc";
     }
 
     @Test
     public void createUser() {
 
         Mockito.when(userRepository.save(Mockito.any())).thenReturn(user);
+        Mockito.when(roleRepository.findById(Mockito.anyString())).thenReturn(Optional.of(role));
         UserDto user1 = userService.createUser(modelMapper.map(user, UserDto.class));
-        System.out.println(user1.getUserName());
+        System.out.println(user1.getName());
         Assertions.assertNotNull(user1);
-        Assertions.assertEquals("prashant",user1.getUserName());
+        Assertions.assertEquals("Pb@gmail.com",user1.getUserEmail());
 
     }
 
@@ -63,7 +77,7 @@ public class UserServiceTest {
         String userId="";
 
         UserDto userDto = UserDto.builder()
-                .userName("prashant bhagat")
+                .name("prashant bhagat")
                 .userEmail("pb@gmail.com")
                 .userGender("male")
                 .userAbout("java dev")
@@ -75,7 +89,7 @@ public class UserServiceTest {
         Mockito.when(userRepository.save(Mockito.any())).thenReturn(user);
 
         UserDto updateUser = userService.updateUser(userDto, userId);
-        System.out.println(updateUser.getUserName());
+        System.out.println(updateUser.getName());
         Assertions.assertNotNull(userDto);
     }
 
@@ -92,7 +106,7 @@ public class UserServiceTest {
     public void getAllUserTest(){
 
       User  user1 = User.builder()
-                .userName("pawan")
+                .name("pawan")
                 .userEmail("Pb@gmail.com")
                 .userGender("male")
                 .userAbout("java developer")
@@ -101,7 +115,7 @@ public class UserServiceTest {
                 .build();
 
       User user2 = User.builder()
-                .userName("kunal")
+                .name("kunal")
                 .userEmail("Pb@gmail.com")
                 .userGender("male")
                 .userAbout("java developer")
@@ -125,7 +139,7 @@ public class UserServiceTest {
 
         UserDto userDto = userService.getUserById(userId);
         Assertions.assertNotNull(userDto);
-        Assertions.assertEquals(user.getUserName(),userDto.getUserName(),"name not matched");
+        Assertions.assertEquals(user.getUserEmail(),userDto.getUserEmail(),"email not matched");
     }
     @Test
     public void getUserByEmailTest(){
@@ -141,7 +155,7 @@ public class UserServiceTest {
     @Test
     public void searchUserTest(){
        User user = User.builder()
-                .userName("prashant bhagat")
+                .name("prashant bhagat")
                 .userEmail("Pb@gmail.com")
                 .userGender("male")
                 .userAbout("java developer")
@@ -150,7 +164,7 @@ public class UserServiceTest {
                 .build();
 
        User user1 = User.builder()
-                .userName("santosh bikkad")
+                .name("santosh bikkad")
                 .userEmail("Pb@gmail.com")
                 .userGender("male")
                 .userAbout("java developer")
@@ -159,7 +173,7 @@ public class UserServiceTest {
                 .build();
 
        User user2 = User.builder()
-                .userName("atul bonde")
+                .name("atul bonde")
                 .userEmail("Pb@gmail.com")
                 .userGender("male")
                 .userAbout("java developer")
@@ -168,7 +182,7 @@ public class UserServiceTest {
                 .build();
 
         String keyword="prashant";
-        Mockito.when(userRepository.findByUserNameContaining(keyword)).thenReturn(Arrays.asList(user,user1,user2));
+        Mockito.when(userRepository.findByNameContaining(keyword)).thenReturn(Arrays.asList(user,user1,user2));
         List<UserDto> userDtos = userService.searchUser(keyword);
         Assertions.assertEquals(3,userDtos.size(),"size not matched");
     }

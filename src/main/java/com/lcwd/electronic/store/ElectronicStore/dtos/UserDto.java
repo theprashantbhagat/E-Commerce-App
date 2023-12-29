@@ -20,7 +20,7 @@ public class UserDto {
 
     @NotEmpty
     @Size(min = 4,message = "UserName Should Contain Atleast 4 Characters!!")
-    private String userName;
+    private String name;
 
     @Email(regexp = "[a-zA-Z0-9][a-zA-Z0-9_.]*@[a-zA-Z0-9]+([.][a-zA-z]+)+",message = "Email Address Is Not Valid")
     private String userEmail;

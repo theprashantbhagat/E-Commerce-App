@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService {
     public UserDto updateUser(UserDto userDto,String userId) {
         log.info("Initiating Dao call for update user data with userId {}:" , userId);
         User user = this.userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException(AppConstants.NOT_FOUND +" Id " + userId));
-        user.setUserName(userDto.getUserName());
+        user.setName(userDto.getName());
         user.setUserEmail(userDto.getUserEmail());
         user.setUserPassword(userDto.getUserPassword());
         user.setUserAbout(userDto.getUserAbout());
@@ -127,7 +127,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDto> searchUser(String keyword) {
         log.info("Initiating Dao call for search the user with keyword {}:",keyword);
-        List<User> users = this.userRepository.findByUserNameContaining(keyword);
+        List<User> users = this.userRepository.findByNameContaining(keyword);
         log.info("Completed Dao call for search the user with keyword {}:",keyword);
         return users.stream().map(user -> this.modelMapper.map(user, UserDto.class)).collect(Collectors.toList());
     }

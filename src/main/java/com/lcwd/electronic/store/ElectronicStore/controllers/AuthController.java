@@ -123,7 +123,7 @@ public class AuthController {
 
         UserDto newUser = UserDto
                 .builder()
-                .userName(name)
+                .name(name)
                 .userEmail(email)
                 .userImageName(photoUrl)
                 .userPassword(newPassword)
