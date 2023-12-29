@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -34,8 +35,13 @@ public class CategoryControllerTest {
     private MockMvc mockMvc;
     @Autowired
     private ModelMapper modelMapper;
-
     private Category category;
+    CategoryDto categoryDto1;
+    CategoryDto categoryDto2;
+    CategoryDto categoryDto3;
+
+    String jwtTkn="Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJSb0BnbWFpbC5jb20iLCJleHAiOjE3MDM4ODMyNzEsImlhdCI6MTcwMzg2NTI3MX0.GczLsbTXpiVibfMPCYbyhILkHrmQKeZjeHobrRgmnNv0YFGrFe6icDEZoABzYZuICQmwLCHHucYSJHEEkyrahA";
+
 
     @BeforeEach
     public void init() {
@@ -45,6 +51,11 @@ public class CategoryControllerTest {
                 .description("this is related to phones")
                 .coverImage("mob.png")
                 .build();
+
+         categoryDto1 = CategoryDto.builder().title("Mobile phones").description("this is related to phones").coverImage("mob.png").build();
+         categoryDto2 = CategoryDto.builder().title("television").description("this is related to tvs").coverImage("tv.png").build();
+         categoryDto3 = CategoryDto.builder().title("Earphones").description("this is related to earphones").coverImage("earp.png").build();
+
     }
 
     @Test
@@ -54,6 +65,7 @@ public class CategoryControllerTest {
 
         this.mockMvc.perform(
                         MockMvcRequestBuilders.post("/api/category/")
+                                .header(HttpHeaders.AUTHORIZATION, jwtTkn)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(convertObjectToJsonString(category))
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -78,6 +90,7 @@ public class CategoryControllerTest {
         Mockito.when(categoryService.updateCategory(Mockito.any(), Mockito.anyString())).thenReturn(dto);
         this.mockMvc.perform(
                         MockMvcRequestBuilders.put("/api/category/" + categoryId)
+                                .header(HttpHeaders.AUTHORIZATION, jwtTkn)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(convertObjectToJsonString(category))
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -88,12 +101,9 @@ public class CategoryControllerTest {
 
     @Test
     public void getAllCategoryTest() throws Exception {
-        CategoryDto category = CategoryDto.builder().title("Mobile phones").description("this is related to phones").coverImage("mob.png").build();
-        CategoryDto category2 = CategoryDto.builder().title("television").description("this is related to tvs").coverImage("tv.png").build();
-        CategoryDto category3 = CategoryDto.builder().title("Earphones").description("this is related to earphones").coverImage("earp.png").build();
 
         PageableResponse<CategoryDto> pagResponse = new PageableResponse<>();
-        pagResponse.setContent(Arrays.asList(category, category2, category3));
+        pagResponse.setContent(Arrays.asList(categoryDto1, categoryDto2, categoryDto3));
         pagResponse.setLastPage(false);
         pagResponse.setPageNumber(100);
         pagResponse.setPageSize(10);
@@ -101,7 +111,8 @@ public class CategoryControllerTest {
 
         Mockito.when(categoryService.getAllCategories(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyString())).thenReturn(pagResponse);
         this.mockMvc.perform(
-                        MockMvcRequestBuilders.get("/api/categories")
+                        MockMvcRequestBuilders.get("/api/category/")
+                                .header(HttpHeaders.AUTHORIZATION, jwtTkn)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .accept(MediaType.APPLICATION_JSON)
                 ).andDo(print())
@@ -115,7 +126,9 @@ public class CategoryControllerTest {
         Mockito.when(categoryService.getCategoryById(categoryId)).thenReturn(dto);
 
         this.mockMvc.perform(
-                        MockMvcRequestBuilders.get("/api/category/" + categoryId))
+                        MockMvcRequestBuilders.get("/api/category/" + categoryId)
+                                .header(HttpHeaders.AUTHORIZATION, jwtTkn)
+                )
                 .andDo(print())
                 .andExpect(status().isOk());
     }
@@ -124,7 +137,9 @@ public class CategoryControllerTest {
         String categoryId="catAbcd";
         Mockito.doNothing().when(categoryService).deleteCategory(categoryId);
         this.mockMvc.perform(
-                        MockMvcRequestBuilders.get("/api/category/" + categoryId))
+                        MockMvcRequestBuilders.get("/api/category/" + categoryId)
+                                .header(HttpHeaders.AUTHORIZATION, jwtTkn)
+                )
                 .andDo(print())
                 .andExpect(status().isOk());
     }
