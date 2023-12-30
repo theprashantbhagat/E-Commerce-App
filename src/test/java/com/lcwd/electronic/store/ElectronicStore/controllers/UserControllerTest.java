@@ -119,7 +119,7 @@ public class UserControllerTest {
         Mockito.when(userService.getAllUsers(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyString())).thenReturn(pagResponse);
 
         this.mockMvc.perform(
-                        MockMvcRequestBuilders.get("/api/users")
+                        MockMvcRequestBuilders.get("/api/users/")
                                 .header(HttpHeaders.AUTHORIZATION, jwtTkn)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .accept(MediaType.APPLICATION_JSON)

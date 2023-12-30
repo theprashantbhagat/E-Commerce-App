@@ -1,10 +1,7 @@
 package com.lcwd.electronic.store.ElectronicStore.services;
 
 import com.lcwd.electronic.store.ElectronicStore.dtos.CategoryDto;
-import com.lcwd.electronic.store.ElectronicStore.dtos.UserDto;
 import com.lcwd.electronic.store.ElectronicStore.entities.Category;
-import com.lcwd.electronic.store.ElectronicStore.entities.Product;
-import com.lcwd.electronic.store.ElectronicStore.entities.User;
 import com.lcwd.electronic.store.ElectronicStore.payloads.PageableResponse;
 import com.lcwd.electronic.store.ElectronicStore.repositories.CategoryRepository;
 import com.lcwd.electronic.store.ElectronicStore.repositories.ProductRepository;
@@ -19,7 +16,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -29,18 +25,14 @@ public class CategoryServiceTest {
 
     @MockBean
     private CategoryRepository categoryRepository;
-
     @MockBean
     private ProductRepository productRepository;
-
     @Autowired
     private ProductService productService;
     @Autowired
     private CategoryService categoryService;
-
     @Autowired
     private ModelMapper modelMapper;
-
     private Category category;
 
     @BeforeEach
@@ -122,7 +114,6 @@ public class CategoryServiceTest {
     public void deleteCategoryTest(){
 
         String categoryId="userabcd";
-
         Mockito.when(categoryRepository.findById("userabcd")).thenReturn(Optional.of(category));
         categoryService.deleteCategory(categoryId);
 
