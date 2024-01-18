@@ -1,6 +1,5 @@
 package com.lcwd.electronic.store.ElectronicStore.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lcwd.electronic.store.ElectronicStore.dtos.UserDto;
 import com.lcwd.electronic.store.ElectronicStore.entities.Role;
@@ -74,7 +73,7 @@ public class UserControllerTest {
 
     }
 
-    private String convertObjectToJsonString(Object user) throws JsonProcessingException {
+    private String convertObjectToJsonString(Object user)  {
 
         try {
             return new ObjectMapper().writeValueAsString(user);
@@ -149,7 +148,7 @@ public class UserControllerTest {
         String userId = "userabcd";
         Mockito.doNothing().when(userService).deleteUser(userId);
         this.mockMvc.perform(
-                        MockMvcRequestBuilders.get("/api/users/" + userId)
+                        MockMvcRequestBuilders.delete("/api/users/" + userId)
                                 .header(HttpHeaders.AUTHORIZATION, jwtTkn)
                 )
                 .andDo(print())

@@ -55,6 +55,15 @@ public class SecurityConfig  {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    private final String[] PUBLIC_URL={
+
+        "/swagger-ui/**",
+    "/webjars/**",
+    "/swagger-resources/**",
+            "/v3/api-docs",
+            "/v2/api-docs"
+    };
+
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider(){
 
@@ -66,6 +75,8 @@ public class SecurityConfig  {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+
 
 //        http.
 //                authorizeRequests()
@@ -93,6 +104,8 @@ public class SecurityConfig  {
                 .antMatchers(HttpMethod.POST,"/api/users/")
                 .permitAll()
                 .antMatchers(HttpMethod.DELETE,"/api/users/**").hasRole("ADMIN")
+                .antMatchers(PUBLIC_URL)
+                .permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
