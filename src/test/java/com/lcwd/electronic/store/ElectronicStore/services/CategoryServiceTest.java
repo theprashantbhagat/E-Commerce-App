@@ -1,7 +1,9 @@
 package com.lcwd.electronic.store.ElectronicStore.services;
 
 import com.lcwd.electronic.store.ElectronicStore.dtos.CategoryDto;
+import com.lcwd.electronic.store.ElectronicStore.dtos.ProductDto;
 import com.lcwd.electronic.store.ElectronicStore.entities.Category;
+import com.lcwd.electronic.store.ElectronicStore.entities.Product;
 import com.lcwd.electronic.store.ElectronicStore.payloads.PageableResponse;
 import com.lcwd.electronic.store.ElectronicStore.repositories.CategoryRepository;
 import com.lcwd.electronic.store.ElectronicStore.repositories.ProductRepository;
@@ -35,6 +37,8 @@ public class CategoryServiceTest {
     private ModelMapper modelMapper;
     private Category category;
 
+    private Product product;
+
     @BeforeEach
     public void init(){
 
@@ -43,6 +47,18 @@ public class CategoryServiceTest {
                 .title("Mobile phones")
                 .description("this is related to phones")
                 .coverImage("mob.png")
+                .build();
+
+        product= Product
+                .builder()
+                .title("MyPhone 15")
+                .description("this phone comes  with  c type charging slot")
+                .price(90000.00)
+                .discountedPrice(800000.00)
+                .quantity(20)
+                .live(true)
+                .stock(true)
+                .imageName("15.png")
                 .build();
     }
 
@@ -121,7 +137,18 @@ public class CategoryServiceTest {
     @Test
     public void createWithCategoryTest(){
 
-        String categoryId="catAbc";
+        String categoryId="";
+
+//        CategoryDto categoryDto=CategoryDto
+//                .builder()
+//                .title("Mobile phones")
+//                .description("this is related to phones")
+//                .coverImage("mob.png")
+//                .build();
+//
+//        Mockito.when(categoryRepository.findById(Mockito.anyString())).thenReturn(Optional.of(category));
+//        Mockito.when(productRepository.save(Mockito.any())).thenReturn(Optional.of(product));
+
 
 
     }

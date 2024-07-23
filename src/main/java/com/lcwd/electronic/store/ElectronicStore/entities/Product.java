@@ -1,5 +1,6 @@
 package com.lcwd.electronic.store.ElectronicStore.entities;
 
+import com.lcwd.electronic.store.ElectronicStore.encrypt.MaskData;
 import lombok.*;
 
 import javax.persistence.*;
@@ -15,6 +16,7 @@ import java.util.Date;
 public class Product {
 
     @Id
+    @MaskData
     private String productId;
 
     @Column(name = "product_title")

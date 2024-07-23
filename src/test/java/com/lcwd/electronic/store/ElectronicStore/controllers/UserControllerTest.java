@@ -39,7 +39,17 @@ public class UserControllerTest {
     User user;
     Role role;
 
-    String jwtTkn="Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJSb0BnbWFpbC5jb20iLCJleHAiOjE3MDM4ODMyNzEsImlhdCI6MTcwMzg2NTI3MX0.GczLsbTXpiVibfMPCYbyhILkHrmQKeZjeHobrRgmnNv0YFGrFe6icDEZoABzYZuICQmwLCHHucYSJHEEkyrahA";
+//    @Value("${jwt.token}")
+//    private String jwtTkn;
+
+    //String jwtTkn="Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJSb0BnbWFpbC5jb20iLCJleHAiOjE3MTc1ODc3ODYsImlhdCI6MTcxNzU2OTc4Nn0.8aOx0Gw64vp8WXcVBG3N41I88pm_NsM0-Ui0OlJCsexjhLExOetoqObREaUxrStuPF-6NtddcohIjQnu7xYInw";
+
+    private String jwtTkn;
+
+    @BeforeEach
+    public void setUp() {
+        jwtTkn = JwtTokenUtil.generateToken("Ro@gmail.com");
+    }
 
 
     @BeforeEach
@@ -93,7 +103,7 @@ public class UserControllerTest {
 
         this.mockMvc.perform(
                         MockMvcRequestBuilders.put("/api/users/" + userId)
-                                .header(HttpHeaders.AUTHORIZATION, jwtTkn)
+                                .header(HttpHeaders.AUTHORIZATION,"Bearer "+ jwtTkn)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(convertObjectToJsonString(user))
                                 .accept(MediaType.APPLICATION_JSON))
@@ -119,7 +129,7 @@ public class UserControllerTest {
 
         this.mockMvc.perform(
                         MockMvcRequestBuilders.get("/api/users/")
-                                .header(HttpHeaders.AUTHORIZATION, jwtTkn)
+                                .header(HttpHeaders.AUTHORIZATION,"Bearer "+ jwtTkn)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .accept(MediaType.APPLICATION_JSON)
                 ).andDo(print())
@@ -136,7 +146,7 @@ public class UserControllerTest {
 
         this.mockMvc.perform(
                         MockMvcRequestBuilders.get("/api/users/" + userId)
-                                .header(HttpHeaders.AUTHORIZATION, jwtTkn)
+                                .header(HttpHeaders.AUTHORIZATION,"Bearer "+ jwtTkn)
                 )
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -149,7 +159,7 @@ public class UserControllerTest {
         Mockito.doNothing().when(userService).deleteUser(userId);
         this.mockMvc.perform(
                         MockMvcRequestBuilders.delete("/api/users/" + userId)
-                                .header(HttpHeaders.AUTHORIZATION, jwtTkn)
+                                .header(HttpHeaders.AUTHORIZATION,"Bearer "+ jwtTkn)
                 )
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -165,7 +175,7 @@ public class UserControllerTest {
 
         this.mockMvc.perform(
                         MockMvcRequestBuilders.get("/api/users/email/" + email)
-                                .header(HttpHeaders.AUTHORIZATION, jwtTkn)
+                                .header(HttpHeaders.AUTHORIZATION,"Bearer "+ jwtTkn)
                 )
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -192,7 +202,7 @@ public class UserControllerTest {
 
         this.mockMvc.perform(
                         MockMvcRequestBuilders.get("/api/users/search/" + keyword)
-                                .header(HttpHeaders.AUTHORIZATION, jwtTkn)
+                                .header(HttpHeaders.AUTHORIZATION,"Bearer "+ jwtTkn)
                 )
                 .andDo(print())
                 .andExpect(status().isOk());
