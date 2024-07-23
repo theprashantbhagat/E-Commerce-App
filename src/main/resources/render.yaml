@@ -3,4 +3,4 @@ services:
     name: spring-boot-app
     env: java
     buildCommand: ./mvnw clean install
-    startCommand: ./mvnw spring-boot:run
+    startCommand: java -jar target/ElectronicStore-0.0.1-SNAPSHOT.jar
